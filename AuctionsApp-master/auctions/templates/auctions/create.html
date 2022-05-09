@@ -1,0 +1,19 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Create list
+{% endblock %}
+
+{% block cardtitle %}
+    Create a new list
+{% endblock %}
+
+{% block body %}
+    <form action="{% url 'auctions:create' %}" method="post">
+    {% csrf_token %}
+    {{ createform.as_p }}
+    <div class="text-center">
+        <input style="background-color: #17a2b8; color: #fff;"class="btn mt-2" type="submit" value="Create">
+    </div>
+    </form>
+{% endblock %}

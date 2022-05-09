@@ -1,0 +1,63 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Watchlist
+{% endblock %}
+
+{% block cardtitle %}
+    My Watchlist
+{% endblock %}
+
+{% block body %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title text-center">Active auctions in your watchlist :</h5>
+        <div class="card-text">
+            {% for auction in auctions %}
+            <div class="card mb-2">
+              <a href="{% url 'auctions:list' auction.id %}">
+                <img src="{{ auction.image }}" class="card-img-top" alt="Auction {{ auction.id }} image">
+              </a>
+              <div class="card-body">
+                <a href="{% url 'auctions:list' auction.id %}">
+                  <h5 class="card-title">{{ auction.title }}</h5>
+                </a>
+                <hr>
+                <div class="text-center">
+                  Auction status : {% if auction.active %} <div class="mb-1" style="font-weight: bold; color: green;">Active</div>{% else %}<div class="mb-1" style="font-weight: bold; color: red;">Finished</div>{% endif %}
+                </div>
+                <p class="card-text">{{ auction.content }}</p>
+                <br>
+                Starting price : <strong>{{ auction.starting_price }} USD.</strong>
+                {% if auction.active %}Current{% else %}Final{% endif %} price : {% if auction.current_price is not None %}<strong style="color: green;">{{ auction.current_price }} USD</strong>.{% else %} No bids made on this auction.{% endif %}
+                <small class="float-right">
+                  Category : <strong>{{ auction.category }}</strong>
+                </small>
+                <hr>
+                <div class="text-center">
+                  {% if user.is_authenticated %}
+                      <form action="{% url 'auctions:list' auction.id %}">
+                        <input class="btn btn-primary mb-2" type="submit" value="Go to Auction Page">
+                      </form>
+                      <form action="{% url 'auctions:watchlist_remove' auction.id %}" method="POST">
+                        {% csrf_token %}
+                        <input class="btn btn-danger" type="submit" value="Remove from watchlist">
+                      </form>
+                    {% else %}
+                    <div class="text-center">
+                      <form action="{% url 'auctions:list' auction.id %}">
+                        <input class="btn btn-primary mb-2" type="submit" value="Register or Login to participate">
+                      </form>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Posted by <strong>{{ auction.author }}</strong> on {{ auction.date }}</small>
+              </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
